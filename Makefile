@@ -1,12 +1,17 @@
-all: run
+all: clean install
 
 run:
-	python src/system_configuration/main.py
+	poetry run python ./src/system_configuration/main.py
+build:
+	poetry build
 install:
-	pip install -e .
+	poetry install
 dist:
 	python setup.py clean sdist
-dist-install:
-	pip install dist/*.tar.gz
 clean:
-	python setup.py clean
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -exec rm -f {} +
+	rm -rf dist/ build/ src/*.egg-info/
+	poetry cache clear pypi --all
+	poetry env remove python
+
