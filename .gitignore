@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+
+# Run
+logs/
+.pytest_cache/
+
+# Build
+build/
