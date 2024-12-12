@@ -10,6 +10,8 @@ sudo apt-get install libxcb-xinerama0
 ## Development
 
 ```shell
+source .venv/bin/activate
+
 # Having issues installing pyqt5?
 poetry cache clear --all pypi
 poetry env remove python
