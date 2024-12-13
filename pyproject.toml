@@ -6,20 +6,14 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 license = "MIT"
 
-#[tool.poetry.source]
-#name = "custom-repo"
-#url = "https://example.com/repository/simple"
-
 [tool.poetry.dependencies]
-python = "^3.12"
+python = ">=3.8,<3.14"
 pyqt5 = "5.15.11"
-pyqt5-qt5 = "5.15.2"
-pyqt5-sip = "12.16.0"
-setuptools = "^75.6.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2"
 flake8 = "^3.9"
+pyinstaller = "^6.1.0"
 
 [tool.poetry.scripts]
 system_configuration = "system_configuration.main:main"

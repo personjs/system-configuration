@@ -5,8 +5,10 @@ __pycache__/
 
 # Run
 logs/
+*.log
 .pytest_cache/
 
 # Build
 build/
 dist/
+system-configuration.spec
