@@ -1,74 +1,94 @@
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLabel, QPushButton, QMenuBar, QMenu, QAction
+from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QMenu, QWidget, QSpacerItem, QSizePolicy, QHBoxLayout, QTextEdit
+from PyQt6.QtGui import QAction
+from PyQt6.QtCore import QProcess
+from system_configuration.controllers.main_controller import MainController
 from system_configuration.utils import logging_utils
-from system_configuration.controllers import main_controller
 
 logger = logging_utils.get_logger(__name__)
 
 class MainWindow(QMainWindow):
-    def __init__(self, width: int, height: int, title: str, theme: str):
+    def __init__(self, width: int, height: int, title: str):
         super().__init__()
 
-        # Set title based on configuration
+        # Set title and size of the window
         self.setWindowTitle(title)
-        
-        # Set window size based on configuration
         self.resize(width, height)
+
+        # Create a central widget and layout
+        central_widget = QWidget(self)
+        layout = QVBoxLayout(central_widget)
+        self.setCentralWidget(central_widget)
         
-        self.create_menu(theme)
-
-        # Layout and widgets
-        layout = QVBoxLayout()
-        self.setLayout(layout)
-
-        self.label = QLabel("This is a PyQt application.")
-        layout.addWidget(self.label)
-
-        self.button = QPushButton("Click Me!")
-        layout.addWidget(self.button)
-                
-        logger.debug("Main window initialized")
+        # Create a scrollable console-like output widget
+        self.console_output = QTextEdit(self)
+        self.console_output.setReadOnly(True)  # Make it read-only
+        layout.addWidget(self.console_output)
         
-    def create_menu(self, theme):
+        # Create a spacer item to push the button to the bottom
+        spacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        layout.addItem(spacer)
+        
+        # Create a horizontal layout for buttons
+        button_layout = QHBoxLayout()
+
+        # Apply button
+        self.apply_button = QPushButton("Apply", self)
+        button_layout.addWidget(self.apply_button)
+        
+        # Create the "Cancel" button
+        self.cancel_button = QPushButton("Cancel", self)
+        button_layout.addWidget(self.cancel_button)
+        
+        # Add button layout to the main layout
+        layout.addLayout(button_layout)
+
+        # Initialize the controller
+        self.controller = MainController(self)
+
+        # Connect the button click event to controller's method
+        self.apply_button.clicked.connect(self.controller.apply_simulate)
+        self.cancel_button.clicked.connect(self.controller.close_application)
+
+        # Create and set the menu bar
+        self.create_menu_bar()
+        
+        # Create QProcess for long-running task
+        self.process = QProcess(self)
+        self.process.readyReadStandardOutput.connect(self.controller.handle_output)
+        self.process.readyReadStandardError.connect(self.controller.handle_error)
+        self.process.finished.connect(self.controller.handle_finished)
+
+        logger.debug("Main Window Initialized.")
+
+    def create_menu_bar(self):
         # Create menu bar
-        self.menubar = QMenuBar()
-        self.setMenuBar(self.menubar)
+        menubar = self.menuBar()
 
-        # Create View menu
+        # Create 'View' menu
         view_menu = QMenu("&View", self)
-        self.menubar.addMenu(view_menu)
+        menubar.addMenu(view_menu)
 
-        # Create Theme submenu
-        theme_menu = QMenu("&Theme", self)
+        # Create 'Theme' submenu
+        theme_menu = QMenu("&Themes", self)
         view_menu.addMenu(theme_menu)
 
-        # Create theme actions
-        self.dark_theme_action = QAction("&Dark", self)
-        self.dark_theme_action.setCheckable(True)
-        self.light_theme_action = QAction("&Light", self)
-        self.light_theme_action.setCheckable(True)
-
-        # Add actions to the theme menu
-        theme_menu.addAction(self.dark_theme_action)
-        theme_menu.addAction(self.light_theme_action)
-
-        # Set initial theme based on configuration (e.g., from config.ini)
-        if theme == "dark":
-            self.set_dark_theme()
-        elif theme == "light":
-            self.set_light_theme()
+        # Dynamically create actions for each theme
+        for theme in self.controller.get_themes():
+            theme_action = QAction(f"&{theme.capitalize()}", self)
+            theme_action.setCheckable(True)
+            theme_action.setChecked(self.controller.get_current_theme() == theme)
+            
+            theme_menu.addAction(theme_action)
+            
+            # Connect each theme action to the controller's method
+            theme_action.triggered.connect(lambda checked, theme=theme: self.controller.on_theme_action_triggered(theme))
+            
+        # Initialize the theme
+        self.controller.set_theme(self.controller.get_current_theme())
         
-        # Connect actions to slots
-        self.dark_theme_action.triggered.connect(self.set_dark_theme)
-        self.light_theme_action.triggered.connect(self.set_light_theme)
-        
-    def set_dark_theme(self):
-        # Apply dark theme styles
-        self.setStyleSheet("background-color: #222; color: #fff;")
-        self.dark_theme_action.setChecked(True)
-        self.light_theme_action.setChecked(False)
-
-    def set_light_theme(self):
-        # Apply light theme styles (default Qt styles)
-        self.setStyleSheet("")
-        self.dark_theme_action.setChecked(False)
-        self.light_theme_action.setChecked(True)
+    def get_theme_actions(self):
+        for action in self.menuBar().actions():
+            for sub_action in action.menu().actions():
+                sub_action_text = sub_action.text().replace("&", "").strip().lower()
+                if sub_action_text == "themes":
+                    return sub_action.menu().actions()
