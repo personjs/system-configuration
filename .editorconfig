@@ -1,0 +1,18 @@
+# .editorconfig file for Python
+
+# Root of the editorconfig configuration
+root = true
+
+# Default settings applied to all files
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Python-specific settings
+[*.py]
+max_line_length = 79
+# python_version = 3.8

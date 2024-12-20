@@ -4,13 +4,13 @@ from system_configuration.services.config_service import ConfigService
 
 class LoggingService:
     _instance = None  # Singleton instance variable
-    
+
     def __new__(cls):
         # Check if the singleton instance already exists
         if cls._instance is None:
             cls._instance = super(LoggingService, cls).__new__(cls)
             cls._instance._setup_logging()
-        
+
         return cls._instance
 
     def _setup_logging(self):
@@ -19,14 +19,14 @@ class LoggingService:
         config_service = ConfigService()
         log_file = config_service.get('Logging', 'logfile', fallback='app.log')
         log_level_str = config_service.get('Logging', 'level', fallback='DEBUG').upper()
-        
+
         # Convert log level string to actual logging level
         log_level = getattr(logging, log_level_str, logging.DEBUG)
 
         # Create the logger
         self.logger = logging.getLogger("root")
         self.logger.setLevel(log_level)
-        
+
         # Create the formatter
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
@@ -39,7 +39,7 @@ class LoggingService:
         console_handler = logging.StreamHandler()
         console_handler.setLevel(log_level)
         console_handler.setFormatter(formatter)
-        
+
         # Add handlers
         self.logger.addHandler(file_handler)
         self.logger.addHandler(console_handler)
@@ -67,4 +67,4 @@ class LoggingService:
             logger.critical(message, extra=extra)
         else:
             logger.info(message, extra=extra)
-            
+

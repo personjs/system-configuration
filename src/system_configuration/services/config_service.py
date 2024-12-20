@@ -3,25 +3,27 @@ import os
 
 class ConfigService:
     _instance = None  # Singleton instance variable
-    
+
     def __new__(cls, config_file=None):
         # Check if an instance already exists
         if cls._instance is None:
             # If not, create a new instance and load the configuration file
             cls._instance = super(ConfigService, cls).__new__(cls)
-            cls._instance._config = configparser.ConfigParser()  # Create ConfigParser object
-            
+            cls._instance._config = configparser.ConfigParser()
+
             if config_file:
-                cls._instance.load(config_file)  # Load the provided config file
+                cls._instance.load(config_file)
+                cls._instance._config_file = config_file
             else:
                 raise ValueError("Config file must be provided on the first initialization.")
-        
+
         return cls._instance
 
     def load(self, config_file):
         """Load configuration from an INI file."""
         if os.path.exists(config_file):
             self._config.read(config_file)
+            self._config_file = config_file
         else:
             raise FileNotFoundError(f"Config file '{config_file}' not found.")
 
@@ -55,3 +57,15 @@ class ConfigService:
             return self._config.getfloat(section, key)
         except (configparser.NoSectionError, configparser.NoOptionError):
             return fallback
+
+    def set(self, section, key, value):
+        try:
+            if not self._config.has_section(section):
+                self._config.add_section(section)
+
+            self._config.set(section, key, value)
+
+            with open(self._config_file, 'w') as configfile:
+                self._config.write(configfile)
+        except Exception as e:
+            print(f"Error writing to config file: {e}")
