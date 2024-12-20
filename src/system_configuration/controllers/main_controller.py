@@ -1,17 +1,17 @@
+import time
+import subprocess
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtGui import QTextCursor
-from system_configuration.utils import logging_utils
-import subprocess
-import time
-
-logger = logging_utils.get_logger(__name__)
+from system_configuration.services.logging_service import LoggingService
 
 class MainController:
     def __init__(self, view):
         self.view = view
+        self.logger = LoggingService().get_logger(__name__)
         self.themes = ["light", "dark"]
         self.current_theme = "dark"  # Default theme
-        logger.debug("Controller Initialized.")
+        
+        self.logger.debug("Controller Initialized.")
     
     def handle_output(self):
         output = bytes(self.view.process.readAllStandardOutput()).decode('utf-8')
@@ -41,7 +41,7 @@ class MainController:
 
     def apply(self):
         # Handle button click action
-        logger.debug("Apply clicked!")
+        self.logger.debug("Apply clicked!")
         # command = ["puppet", "agent", "-t"]
         command = ["python", "-c", "import time; [time.sleep(1) for _ in range(10)]"]
         try:
@@ -59,13 +59,13 @@ class MainController:
         self.view.console_output.setTextCursor(cursor)
         
     def close_application(self):
-        logger.info("Cancel button clicked. Exiting application...")
+        self.logger.info("Cancel button clicked. Exiting application...")
         QApplication.quit()
 
     def set_theme(self, theme: str):
         # Set the theme and apply the corresponding styles
         if theme not in self.themes:
-            logger.error(f"Invalid theme: {theme}")
+            self.logger.error(f"Invalid theme: {theme}")
             return
         
         # Update the current theme
@@ -74,7 +74,7 @@ class MainController:
             self.view.setStyleSheet("background-color: #222; color: #fff;")
         elif theme == "light":
             self.view.setStyleSheet("background-color: #fff; color: #222;")
-        logger.debug(f"Theme set to {theme}")
+        self.logger.debug(f"Theme set to {theme}")
         
         # After setting the theme, update the menu actions to reflect the change
         self.update_theme_menu_actions()

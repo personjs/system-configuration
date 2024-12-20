@@ -2,17 +2,23 @@ from PyQt6.QtWidgets import QMainWindow, QVBoxLayout, QPushButton, QMenu, QWidge
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import QProcess
 from system_configuration.controllers.main_controller import MainController
-from system_configuration.utils import logging_utils
-
-logger = logging_utils.get_logger(__name__)
+from system_configuration.services.config_service import ConfigService
+from system_configuration.services.logging_service import LoggingService
 
 class MainWindow(QMainWindow):
-    def __init__(self, width: int, height: int, title: str):
+    def __init__(self):
         super().__init__()
+        
+        self.config_service = ConfigService()
+        self.logger = LoggingService().get_logger(__name__)
+        
+        _title = self.config_service.get('Window', 'title')
+        _width = self.config_service.getint('Window', 'width')
+        _height = self.config_service.getint('Window', 'height')
 
         # Set title and size of the window
-        self.setWindowTitle(title)
-        self.resize(width, height)
+        self.setWindowTitle(_title)
+        self.resize(_width, _height)
 
         # Create a central widget and layout
         central_widget = QWidget(self)
@@ -58,7 +64,7 @@ class MainWindow(QMainWindow):
         self.process.readyReadStandardError.connect(self.controller.handle_error)
         self.process.finished.connect(self.controller.handle_finished)
 
-        logger.debug("Main Window Initialized.")
+        self.logger.debug("Main Window Initialized.")
 
     def create_menu_bar(self):
         # Create menu bar
