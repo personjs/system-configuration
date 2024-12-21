@@ -17,6 +17,7 @@ class LoggingService:
         """Set up the logging configuration using ConfigService."""
         # Fetch configuration using ConfigService
         config_service = ConfigService()
+
         log_file = config_service.get('Logging', 'logfile', fallback='app.log')
         log_level_str = config_service.get('Logging', 'level', fallback='DEBUG').upper()
 

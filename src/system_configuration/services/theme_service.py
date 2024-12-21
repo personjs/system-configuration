@@ -31,5 +31,4 @@ class ThemeService:
         # Update the current theme
         self.theme = theme
         self.config_service.set('Window', 'theme', theme)
-
         self.logger.debug(f"Theme set to {theme}")
