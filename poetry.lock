@@ -233,17 +233,17 @@ hook-testing = ["execnet (>=1.5.0)", "psutil", "pytest (>=2.7.3)"]
 
 [[package]]
 name = "pyinstaller-hooks-contrib"
-version = "2024.10"
+version = "2024.11"
 description = "Community maintained hooks for PyInstaller"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pyinstaller_hooks_contrib-2024.10-py3-none-any.whl", hash = "sha256:ad47db0e153683b4151e10d231cb91f2d93c85079e78d76d9e0f57ac6c8a5e10"},
-    {file = "pyinstaller_hooks_contrib-2024.10.tar.gz", hash = "sha256:8a46655e5c5b0186b5e527399118a9b342f10513eb1425c483fa4f6d02e8800c"},
+    {file = "pyinstaller_hooks_contrib-2024.11-py3-none-any.whl", hash = "sha256:2781d121a1ee961152ba7287a262c65a1078da30c9ef7621cb8c819326884fd5"},
+    {file = "pyinstaller_hooks_contrib-2024.11.tar.gz", hash = "sha256:84399af6b4b902030958063df25f657abbff249d0f329c5344928355c9833ab4"},
 ]
 
 [package.dependencies]
-importlib-metadata = {version = ">=4.6", markers = "python_version < \"3.10\""}
+importlib_metadata = {version = ">=4.6", markers = "python_version < \"3.10\""}
 packaging = ">=22.0"
 setuptools = ">=42.0.0"
 
@@ -275,6 +275,7 @@ python-versions = "*"
 files = [
     {file = "PyQt6_Qt6-6.8.1-py3-none-macosx_10_14_x86_64.whl", hash = "sha256:1eb8460a1fdb38d0b2458c2974c01d471c1e59e4eb19ea63fc447aaba3ad530e"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:9f3790c4ce4dc576e48b8718d55fb8743057e6cbd53a6ca1dd253ffbac9b7287"},
+    {file = "PyQt6_Qt6-6.8.1-py3-none-manylinux_2_28_x86_64.whl", hash = "sha256:d6ca5d2b9d2ec0ee4a814b2175f641a5c4299cb80b45e0f5f8356632663f89b3"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-manylinux_2_35_x86_64.whl", hash = "sha256:08065d595f1e6fc2dde9f4450eeff89082f4bad26f600a8e9b9cc5966716bfcf"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-manylinux_2_39_aarch64.whl", hash = "sha256:20843cb86bd94942d1cd99e39bf1aeabb875b241a35a8ab273e4bbbfa63776db"},
     {file = "PyQt6_Qt6-6.8.1-py3-none-win_amd64.whl", hash = "sha256:006d786693d0511fbcf184a862edbd339c6ed1bb3bd9de363d73a19ed4b23dff"},
